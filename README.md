@@ -1,4 +1,4 @@
-# Data Science 2016
+# Data Science 2016 - Homework 2
 
 [![Build Status](https://travis-ci.org/csula/datascience-spring-2016.svg?branch=master)](https://travis-ci.org/csula/datascience-spring-2016)
 
