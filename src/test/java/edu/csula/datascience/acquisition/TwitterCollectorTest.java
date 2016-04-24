@@ -6,8 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
 import me.jhenrique.model.Tweet;
 
 public class TwitterCollectorTest {

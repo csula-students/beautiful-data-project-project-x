@@ -10,10 +10,6 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-/**
- * Source implementation using Yelp Dataset
- * 
- */
 public class YelpSource implements Source<String> {
 	private String filename;
 	private InputStream inputStream;
@@ -27,7 +23,6 @@ public class YelpSource implements Source<String> {
 		this.inputStream = new FileInputStream(filename);
 		this.inputStreamReader = new InputStreamReader(inputStream);
 		this.setBr(new BufferedReader(inputStreamReader));
-
 	}
 
 	@Override
@@ -37,44 +32,39 @@ public class YelpSource implements Source<String> {
 
 	@Override
 	public Collection<String> next() {
-		
+
 		List<String> list = Lists.newArrayList();
-		
+
 		try {
 			String l;
-			if((l = br.readLine()) == null) {
+			if ((l = br.readLine()) == null) {
 				this.setFlag(false);
 			} else {
 				list.add(l);
-		
-		String line = null;
 
-		try {
-			long count = 0;
-			
-			while ((line = br.readLine()) != null && count < 1000) {
-				
-				//System.out.println(line);
+				String line = null;
+
 				try {
-				list.add(line);
-				} catch(Exception e) {
-					this.setFlag(true);
-					break;
-					
+					long count = 0;
+
+					while ((line = br.readLine()) != null && count < 1000) {
+						try {
+							list.add(line);
+						} catch (Exception e) {
+							this.setFlag(true);
+							break;
+						}
+						count++;
+					}
+					System.out.println(">>>>>>>>>>>>" + "    " + count + "     <<<<<<<<<<<");
+				} catch (IOException e) {
+					System.out.println("Error raeding the yelp file");
 				}
-				count++;
-				//System.out.println(count);
 			}
-			System.out.println(">>>>>>>>>>>>" + "    " + count + "     <<<<<<<<<<<");
-		} catch (IOException e) {
-			System.out.println("Error raeding the yelp file");
-		}
-		}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		return list;
 	}
 

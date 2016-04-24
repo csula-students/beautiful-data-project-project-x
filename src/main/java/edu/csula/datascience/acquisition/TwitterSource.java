@@ -10,15 +10,9 @@ import com.mongodb.Mongo;
 import me.jhenrique.manager.TweetManager;
 import me.jhenrique.manager.TwitterCriteria;
 import me.jhenrique.model.Tweet;
-import twitter4j.*;
-import twitter4j.conf.ConfigurationBuilder;
-
 import java.util.Collection;
 import java.util.List;
 
-/**
- * An example of Source implementation using Twitter4j api to grab tweets
- */
 public class TwitterSource implements Source<Tweet> {
 	private Boolean flag;
 	private Mongo mongo;
@@ -46,9 +40,7 @@ public class TwitterSource implements Source<Tweet> {
 
 	@Override
 	public Collection<Tweet> next() {
-
 		List<Tweet> list = Lists.newArrayList();
-
 		if (curs.hasNext()) {
 
 			DBObject o = curs.next();
@@ -65,23 +57,13 @@ public class TwitterSource implements Source<Tweet> {
 			TwitterCriteria criteria = TwitterCriteria.create().setQuerySearch("#" + this.restaurant_name + city)
 					.setMaxTweets(50);
 			try {
-			list.addAll(TweetManager.getTweets(criteria));
-			} catch(Exception e) {
+				list.addAll(TweetManager.getTweets(criteria));
+			} catch (Exception e) {
 				System.out.println("corrupted response from server");
 			}
-
 		} else {
-
 			this.setFlag(false);
 		}
-		// take one business by calling iterator.next()
-		// Take restaurant name from database here
-		// create query string to pass in twitter criteria
-
-		// TwitterCriteria criteria =
-		// TwitterCriteria.create().setQuerySearch("#BeerHaus" +
-		// "#LasVegas").setMaxTweets(100);
-
 		return list;
 	}
 

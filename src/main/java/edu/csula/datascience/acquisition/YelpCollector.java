@@ -47,13 +47,10 @@ public class YelpCollector implements Collector<String, String> {
 
 	@Override
 	public void save(Collection<String> data) {
-		// List<String> list = Lists.newArrayList();
-		DBCollection collection = null;
 
+		DBCollection collection = null;
 		for (Iterator<String> iterator = data.iterator(); iterator.hasNext();) {
 			String line = (String) iterator.next();
-			// System.out.println(count++);
-			// System.out.println(line);
 
 			if (line.contains("\"type\": \"business\"")) {
 				collection = this.getDb().getCollection("business");
