@@ -20,7 +20,7 @@ public class YelpCollector implements Collector<String, String> {
 	@SuppressWarnings("deprecation")
 	public YelpCollector() {
 		this.mongo = new Mongo("localhost", 27017);
-		this.db = mongo.getDB("bigdata");
+		this.db = mongo.getDB("bigtest");
 	}
 
 	@Override
@@ -29,10 +29,16 @@ public class YelpCollector implements Collector<String, String> {
 
 		for (Iterator<String> iterator = src.iterator(); iterator.hasNext();) {
 			String line = (String) iterator.next();
-			if (line.contains("Restaurants") && ( line.contains("\"state\": \"AZ\"") || line.contains("\"state\": \"PA\"") || line.contains("\"state\": \"WI\"") || line.contains("\"state\": \"NC\"") || line.contains("\"state\": \"IL\"") || line.contains("\"state\": \"NV\"") )) {
-				list.add(line);
-				System.out.println(line);
+			if (line.contains("\"type\": \"business\"")) {
+				if (line.contains("Restaurants")
+						&& (line.contains("\"state\": \"AZ\"") || line.contains("\"state\": \"PA\"")
+								|| line.contains("\"state\": \"WI\"") || line.contains("\"state\": \"NC\"")
+								|| line.contains("\"state\": \"IL\"") || line.contains("\"state\": \"NV\""))) {
+					list.add(line);
+					System.out.println(line);
+				}
 			} else {
+				list.add(line);
 			}
 		}
 
@@ -46,8 +52,8 @@ public class YelpCollector implements Collector<String, String> {
 
 		for (Iterator<String> iterator = data.iterator(); iterator.hasNext();) {
 			String line = (String) iterator.next();
-			//System.out.println(count++);
-			//System.out.println(line);
+			// System.out.println(count++);
+			// System.out.println(line);
 
 			if (line.contains("\"type\": \"business\"")) {
 				collection = this.getDb().getCollection("business");

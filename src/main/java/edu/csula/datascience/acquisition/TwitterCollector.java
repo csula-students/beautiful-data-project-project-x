@@ -31,7 +31,7 @@ public class TwitterCollector implements Collector<Tweet, Tweet> {
 		this.mongoClient = new MongoClient();
 
 		// select `bd-example` as testing database
-		this.database = mongoClient.getDatabase("bigdata");
+		this.database = mongoClient.getDatabase("bigtest");
 
 		// select collection by name `tweets`
 		this.collection = database.getCollection("twitterdata");
