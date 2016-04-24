@@ -1,6 +1,15 @@
 package edu.csula.datascience.acquisition;
 
 import com.google.common.collect.Lists;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+
+import me.jhenrique.manager.TweetManager;
+import me.jhenrique.manager.TwitterCriteria;
+import me.jhenrique.model.Tweet;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -10,70 +19,93 @@ import java.util.List;
 /**
  * An example of Source implementation using Twitter4j api to grab tweets
  */
-public class TwitterSource implements Source<Status> {
-    private long minId;
-    private final String searchQuery;
+public class TwitterSource implements Source<Tweet> {
+	private Boolean flag;
+	private Mongo mongo;
+	private DB db;
+	private DBCursor curs;
+	private String address;
+	private String restaurant_name;
+	private DBCollection table;
 
-    public TwitterSource(long minId, String query) {
-        this.minId = minId;
-        this.searchQuery = query;
-    }
+	@SuppressWarnings("deprecation")
+	public TwitterSource() {
+		this.mongo = new Mongo("localhost", 27017);
+		this.db = mongo.getDB("bigdata");
+		this.setFlag(true);
+		this.address = null;
+		this.restaurant_name = null;
+		this.table = db.getCollection("business");
+		this.curs = this.table.find();
+	}
 
-    @Override
-    public boolean hasNext() {
-        return minId > 0;
-    }
+	@Override
+	public boolean hasNext() {
+		return flag;
+	}
 
-    @Override
-    public Collection<Status> next() {
-        List<Status> list = Lists.newArrayList();
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-            .setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"))
-            .setOAuthConsumerSecret(System.getenv("TWITTER_CONSUMER_SECRET"))
-            .setOAuthAccessToken(System.getenv("TWITTER_ACCESS_TOKEN"))
-            .setOAuthAccessTokenSecret(System.getenv("TWITTER_ACCESS_SECRET"));
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        Twitter twitter = tf.getInstance();
+	@Override
+	public Collection<Tweet> next() {
 
-        Query query = new Query(searchQuery);
-        query.setLang("EN");
-        query.setSince("20140101");
-        if (minId != Long.MAX_VALUE) {
-            query.setMaxId(minId);
-        }
+		List<Tweet> list = Lists.newArrayList();
 
-        list.addAll(getTweets(twitter, query));
+		if (curs.hasNext()) {
 
-        return list;
-    }
+			DBObject o = curs.next();
 
-    private List<Status> getTweets(Twitter twitter, Query query) {
-        QueryResult result;
-        List<Status> list = Lists.newArrayList();
-        try {
-            do {
-                result = twitter.search(query);
+			this.address = (String) o.get("full_address");
+			this.restaurant_name = (String) o.get("name");
+			this.restaurant_name = restaurant_name.replaceAll(" ", "");
 
-                List<Status> tweets = result.getTweets();
-                for (Status tweet : tweets) {
-                    minId = Math.min(minId, tweet.getId());
-                }
-                list.addAll(tweets);
-            } while ((query = result.nextQuery()) != null);
-        } catch (TwitterException e) {
-            // Catch exception to handle rate limit and retry
-            e.printStackTrace();
-            System.out.println("Got twitter exception. Current min id " + minId);
-            try {
-                Thread.sleep(e.getRateLimitStatus()
-                    .getSecondsUntilReset() * 1000);
-                list.addAll(getTweets(twitter, query));
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
+			String city = "";
+			if (address.contains("PA")) {
+				city = "#Pittsburgh";
+			} else {
+			}
+			TwitterCriteria criteria = TwitterCriteria.create().setQuerySearch("#" + this.restaurant_name + city)
+					.setMaxTweets(50);
+			try {
+			list.addAll(TweetManager.getTweets(criteria));
+			} catch(Exception e) {
+				System.out.println("corrupted response from server");
+			}
 
-        return list;
-    }
+		} else {
+
+			this.setFlag(false);
+		}
+		// take one business by calling iterator.next()
+		// Take restaurant name from database here
+		// create query string to pass in twitter criteria
+
+		// TwitterCriteria criteria =
+		// TwitterCriteria.create().setQuerySearch("#BeerHaus" +
+		// "#LasVegas").setMaxTweets(100);
+
+		return list;
+	}
+
+	public Boolean getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Boolean flag) {
+		this.flag = flag;
+	}
+
+	public Mongo getMongo() {
+		return mongo;
+	}
+
+	public void setMongo(Mongo mongo) {
+		this.mongo = mongo;
+	}
+
+	public DB getDb() {
+		return db;
+	}
+
+	public void setDb(DB db) {
+		this.db = db;
+	}
 }

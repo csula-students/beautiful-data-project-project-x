@@ -33,6 +33,12 @@ dependencies {
   compile 'com.mashape.unirest:unirest-java:1.4.9'
   compile 'org.mongodb:mongodb-driver:3.2.2'
   compile 'org.twitter4j:twitter4j-core:4.0.4'
+  compile 'com.fasterxml.jackson.core:jackson-annotations:2.0.1'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
+  compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
+  compile files('libs/got.jar')
+  compile files('libs/jsoup-1.8.3.jar')
+
 
   testCompile group: 'junit', name: 'junit', version: '4.11'
 }
