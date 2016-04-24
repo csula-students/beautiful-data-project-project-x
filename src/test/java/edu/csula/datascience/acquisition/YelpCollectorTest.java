@@ -22,8 +22,8 @@ public class YelpCollectorTest {
 	public void mungee() throws Exception {
 		List<String> list = (List<String>) collector.mungee(source.next());
 		List<String> expectedList = Lists.newArrayList(
-				"\"id\": \"1\", \"state\": \"AZ\", \"categories\": \"Restaurants\"",
-				"\"id\": \"2\", \"state\": \"NV\", \"categories\": \"Restaurants\"");
+				"\"id\": \"1\", \"state\": \"AZ\", \"categories\": \"Restaurants\", \"type\": \"business\"",
+				"\"id\": \"2\", \"state\": \"NV\", \"categories\": \"Restaurants\", \"type\": \"business\"");
 
 		Assert.assertEquals(list.size(), 2);
 

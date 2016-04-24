@@ -15,8 +15,8 @@ public class YelpMockSource implements Source<String> {
 	@Override
 	public Collection<String> next() {
 		return Lists.newArrayList(
-				"\"id\": \"1\", \"state\": \"AZ\", \"categories\": \"Restaurants\"",
-				"\"id\": \"2\", \"state\": \"NV\", \"categories\": \"Restaurants\"",
+				"\"id\": \"1\", \"state\": \"AZ\", \"categories\": \"Restaurants\", \"type\": \"business\"",
+				"\"id\": \"2\", \"state\": \"NV\", \"categories\": \"Restaurants\", \"type\": \"business\"",
 				"\"id\": \"3\", \"state\": \"PA\", \"categories\": \"Something else\""
 				);
 	}
