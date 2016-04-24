@@ -54,6 +54,8 @@ public class TwitterSource implements Source<Tweet> {
 				city = "#Pittsburgh";
 			} else {
 			}
+			
+			//source : https://github.com/Jefferson-Henrique/GetOldTweets-java
 			TwitterCriteria criteria = TwitterCriteria.create().setQuerySearch("#" + this.restaurant_name + city)
 					.setMaxTweets(50);
 			try {

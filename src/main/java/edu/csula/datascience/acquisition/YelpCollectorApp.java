@@ -17,7 +17,7 @@ public class YelpCollectorApp {
 			// initialize source with a filename
 			YelpSource source = null;
 			try {
-				source = new YelpSource("/Users/dhruvparmar91/desktop/" + filename);
+				source = new YelpSource("/Users/dhruvparmar91/desktop/yelp_dataset" + filename);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
