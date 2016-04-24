@@ -20,7 +20,7 @@ public class YelpCollector implements Collector<String, String> {
 	@SuppressWarnings("deprecation")
 	public YelpCollector() {
 		this.mongo = new Mongo("localhost", 27017);
-		this.db = mongo.getDB("bigtest");
+		this.db = mongo.getDB("bigdata");
 	}
 
 	@Override
