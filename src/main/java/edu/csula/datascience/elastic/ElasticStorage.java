@@ -10,6 +10,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.Node;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +29,7 @@ public class ElasticStorage {
 				.node();
 		Client client = node.client();
 
-		// File json = new
-		// File("/Users/dhruvparmar91/desktop/yelp_dataset/business.json");
+		File json = new File(ClassLoader.getSystemResource("business.json").toURI());
 
 		// create bulk processor
 		BulkProcessor bulkProcessor = BulkProcessor.builder(client, new BulkProcessor.Listener() {
@@ -54,7 +54,7 @@ public class ElasticStorage {
 
 		try {
 
-			InputStream stream = new FileInputStream("/Users/dhruvparmar91/desktop/yelp_dataset/business.json");
+			InputStream stream = new FileInputStream(json);
 			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
@@ -68,7 +68,7 @@ public class ElasticStorage {
 						bulkProcessor.add(new IndexRequest(indexName, typeName).source(line));
 					}
 				} else {
-					//line = line.replace("$", "");
+					// line = line.replace("$", "");
 					bulkProcessor.add(new IndexRequest(indexName, typeName).source(line));
 				}
 				line = reader.readLine();
